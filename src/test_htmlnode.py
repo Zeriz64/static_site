@@ -4,6 +4,7 @@ from htmlnode import HTMLNode
 
 class TestHTMLNode(unittest.TestCase):
     def test_methods(self):
+        print("====================\nHTMLNode Test Start\n====================")
         test_list = []
         test_list.append(HTMLNode("tag", "value", "children", {"prop": "value", "prop2": "value2"}))
         test_list.append(HTMLNode("tag", "value", "children", {"prop": "value"}))
@@ -12,6 +13,7 @@ class TestHTMLNode(unittest.TestCase):
         for item in test_list:
             print(item)
             print(item.props_to_html())
+        print("====================\nHTMLNode Test Start\n====================")
 
 if __name__ == "__main__":
     unittest.main()

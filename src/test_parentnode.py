@@ -3,6 +3,7 @@ import unittest
 from htmlnode import *
 
 class TestLeafNode(unittest.TestCase):
+    print("====================\nParentNode Test Start\n====================")
     def test_methods(self):
         test_list = []
 
@@ -80,6 +81,7 @@ class TestLeafNode(unittest.TestCase):
 
         for item in test_list:
             print(item.to_html())
+        print("====================\nParentNode Test End\n====================")
 
 if __name__ == "__main__":
     unittest.main()
