@@ -33,9 +33,23 @@ class TestTextNode(unittest.TestCase):
             new_nodes = split_nodes_delimiter([delimit], "**", text_type_bold)
             new_nodes = split_nodes_delimiter(new_nodes, "*", text_type_italic)
             new_nodes = split_nodes_delimiter(new_nodes, "`", text_type_code)
-            print(new_nodes)
-        print("====================\nTextNode Test End\n====================")
 
+    def test_markdown_images(self):
+        print(extract_markdown_images("This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif)"))
+
+    def test_markdown_links(self):
+        print(extract_markdown_links("This is text with a link [to boot dev](https://www.boot.dev)"))
+
+    def test_split_image(self):
+        print(split_nodes_image([TextNode("This is a Text Node with an ![image](http://link_to_image.com)", "text")]))
+        print(split_nodes_image([TextNode("This is a Text Node ![image](http://link_to_image.com) with an ![image2](http://link_to_image2.com)", "text")]))
+        print(split_nodes_image([TextNode("This is a Text Node with an ![image](http://link_to_image.com) and a ![image2](http://link_to_image2.com) and a ![image3](http://link_to_image3.com)", "text")]))
+
+    def test_split_link(self):
+        print(split_nodes_link([TextNode("This is a Text Node with an [description](http://link.com)", "text")]))
+        print(split_nodes_link([TextNode("This is a Text Node [description](http://link.com) with an [description2](http://link2.com)", "text")]))
+        print(split_nodes_link([TextNode("This is a Text Node with an [description](http://link.com) and a [description2](http://link2.com) and a [description3](http://link3.com)", "text")]))
+        print("====================\nTextNode Test End\n====================")
 
 if __name__ == "__main__":
     unittest.main()
