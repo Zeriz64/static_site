@@ -13,12 +13,11 @@ class TestMarkdown(unittest.TestCase):
         print(text_to_textnodes(text))
 
     def test_block_to_blocktype(self):
-        markdown = "This is the start of the paragraph\n\n# 1 header \n\n ## 2 header \n\n ### 3 header \n\n #### 4 header \n\n ##### 5 header \n\n ###### 6 header \n\n``` this is a code block ``` \n\n>this is a quote block \n\n* unorder1\n* unorder2\n\n- unorder1\n- unorder2\n\n1. order1\n2. order2\n3. order3\n\nend of the paragraph"
+        markdown = "This is the start of the paragraph\n\n# 1 header \n\n ## 2 header \n\n ### 3 header \n\n #### 4 header \n\n ##### 5 header \n\n ###### 6 header \n\n```\n this is a code block \n``` \n\n>this is a quote block \n\n* unorder1\n* unorder2\n\n- unorder1\n- unorder2\n\n1. order1\n2. order2\n3. order3\n\nend of the paragraph"
             
-        blocks = markdown_to_blocks(markdown)
+        block = markdown_to_html_node(markdown)
 
-        for block in blocks:
-            print(block_to_block_type(block))
+        print(block)
         print("====================\nMarkdown Test End\n====================")
 
     if __name__ == "__main__":

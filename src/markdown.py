@@ -120,6 +120,9 @@ def block_to_block_type(block):
         return block_type_code
 
     if block.startswith(">"):
+        for line in lines:
+            if not line.startswith(">"):
+                return block_type_para
         return block_type_quote
 
     if block.startswith("* "):
@@ -144,7 +147,91 @@ def block_to_block_type(block):
 
     return block_type_para
 
+def markdown_to_html_node(markdown):
+    blocks = markdown_to_blocks(markdown)
+    children = []
+    for block in blocks:
+        block_type = block_to_block_type(block)
+        
+        if block_type == block_type_para:
+            node = para_to_html(block)
+        
+        elif block_type == block_type_head:
+            node = head_to_html(block)
 
+        elif block_type == block_type_code:
+            node = code_to_html(block)
+        
+        elif block_type == block_type_quote:
+            node = quote_to_html(block)
 
+        elif block_type == block_type_ulist:
+            node = ulist_to_html(block)
 
+        elif block_type == block_type_olist:
+            node = olist_to_html(block)
+        
+        else:
+            raise ValueError("Invalid block type.")
 
+        children.append(node)
+    return ParentNode("div", children)
+
+def para_to_html(block):
+    split = block.split("\n")
+    text = " ".join(split)
+    children = text_to_children(text)
+    return ParentNode("p", children)
+
+def head_to_html(block):
+    count = 0
+    for char in block:
+        if char == "#":
+            count += 1
+        else:
+            break
+    children = text_to_children(block[count + 1])
+    return ParentNode(f"h{count}", children)
+
+def code_to_html(block):
+    split = block.split("```")
+    text = split[0].strip()
+    children = text_to_children(text)
+    node = ParentNode("code", children)
+    return ParentNode("pre", [node])
+
+def quote_to_html(block):
+    split = block.split("\n")
+    new_text = []
+    for line in split:
+        line = line.lstrip(">")
+        new_text.append(line.strip())
+    text = " ".join(new_text)
+    children = text_to_children(text)
+    ParentNode("blockquote", children)
+
+def ulist_to_html(block):
+    split = block.split("\n")
+    items = []
+    for line in split:
+        line = line[2:]
+        children = text_to_children(line)
+        items.append(ParentNode("li", children))
+    return ParentNode("ul", items)
+
+def olist_to_html(block):
+    split = block.split("\n")
+    items = []
+    for line in split:
+        line = line[3:]
+        children = text_to_children(line)
+        items.append(ParentNode("li", children))
+    return ParentNode("ol", items)
+
+def text_to_children(text):
+    children = []
+    nodes = text_to_textnodes(text)
+    for node in nodes:
+        html_node = text_node_to_html_node(node)
+        children.append(html_node)
+    return children
