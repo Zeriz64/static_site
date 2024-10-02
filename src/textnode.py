@@ -40,7 +40,7 @@ def split_nodes_delimiter(nodes, delimiter, text_type):
     new_nodes = []
     for node in nodes:
         if node.text_type != text_type_text:
-            delimited_nodes.append(node)
+            new_nodes.append(node)
             continue
         split_node = node.text.split(delimiter)
         if len(split_node) % 2 == 0:
@@ -53,7 +53,7 @@ def split_nodes_delimiter(nodes, delimiter, text_type):
                 delimited_nodes.append(TextNode(split_node[i], text_type_text))
             else:
                 delimited_nodes.append(TextNode(split_node[i], text_type))
-    new_nodes.extend(delimited_nodes)
+        new_nodes.extend(delimited_nodes)
     return new_nodes
 
 def extract_markdown_images(text):
@@ -80,14 +80,15 @@ def split_nodes_image(old_nodes):
             if len(split_node) != 2:
                 raise ValueError("Image not closed.")
             for i in range(0, len(split_node)):
-                if split_node == "":
+                if split_node[i] == "":
                     continue
                 if i == 0:
-                    split_image_nodes.append(TextNode(split_node[i], text_type_text))
-                    split_image_nodes.append(TextNode(image_alt, text_type_image, image_link))
+                    new_nodes.append(TextNode(split_node[0], text_type_text))
+                    new_nodes.append(TextNode(image_alt, text_type_image, image_link))
                 else:
-                    node_text = split_node[i]
-    new_nodes.extend(split_image_nodes)
+                    node_text = split_node[1]
+            if node_text != "":
+                new_nodes.append(TextNode(node_text, text_type_text))
     return new_nodes
 
 def split_nodes_link(old_nodes):
@@ -111,9 +112,18 @@ def split_nodes_link(old_nodes):
                 if split_node == "":
                     continue
                 if i == 0:
-                    split_link_nodes.append(TextNode(split_node[i], text_type_text))
-                    split_link_nodes.append(TextNode(link_alt, text_type_link, link_link))
+                    new_nodes.append(TextNode(split_node[0], text_type_text))
+                    new_nodes.append(TextNode(link_alt, text_type_link, link_link))
                 else:
-                    node_text = split_node[i]
-    new_nodes.extend(split_link_nodes)
+                    node_text = split_node[1]
+            if node_text != "":
+                new_nodes.append(TextNode(node_text, text_type_text))
     return new_nodes
+
+def text_to_textnodes(text):
+    node_list = split_nodes_delimiter([TextNode(text, text_type_text)], "**", text_type_bold)
+    node_list = split_nodes_delimiter(node_list, "*", text_type_italic)
+    node_list = split_nodes_delimiter(node_list, "`", text_type_code)
+    node_list = split_nodes_image(node_list)
+    node_list = split_nodes_link(node_list)
+    return node_list
