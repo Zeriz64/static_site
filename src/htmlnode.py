@@ -28,7 +28,7 @@ class ParentNode(HTMLNode):
             raise ValueError("Missing tag on Parent Node.")
         if self.children == None:
             raise ValueError("Missing Children on Parent Node.")
-        list_of_children = ""        
+        list_of_children = ""
         for child in self.children:
             list_of_children += child.to_html()
         return f"<{self.tag}{self.props_to_html()}>{list_of_children}</{self.tag}>"

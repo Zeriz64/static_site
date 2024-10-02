@@ -190,12 +190,14 @@ def head_to_html(block):
             count += 1
         else:
             break
-    children = text_to_children(block[count + 1])
+    if count + 1 >= len(block):
+        raise ValueError("Invalid heading level.")
+    children = text_to_children(block[count + 1:])
     return ParentNode(f"h{count}", children)
 
 def code_to_html(block):
     split = block.split("```")
-    text = split[0].strip()
+    text = block[4:-3]
     children = text_to_children(text)
     node = ParentNode("code", children)
     return ParentNode("pre", [node])
@@ -208,7 +210,7 @@ def quote_to_html(block):
         new_text.append(line.strip())
     text = " ".join(new_text)
     children = text_to_children(text)
-    ParentNode("blockquote", children)
+    return ParentNode("blockquote", children)
 
 def ulist_to_html(block):
     split = block.split("\n")
@@ -235,3 +237,12 @@ def text_to_children(text):
         html_node = text_node_to_html_node(node)
         children.append(html_node)
     return children
+
+def extract_title(markdown):
+    lines = markdown.split("\n\n")
+    for line in lines:
+        print(line)
+        line = line.strip()
+        if line.startswith("# "):
+            return line[2:]
+    raise ValueError("No Header.")
