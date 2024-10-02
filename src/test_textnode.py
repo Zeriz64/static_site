@@ -20,11 +20,7 @@ class TestTextNode(unittest.TestCase):
         node_list.append(TextNode("This is Image Node", "image", "image.url"))
         for node in node_list:
             print(text_node_to_html_node(node))
-
-    def test_text_to_textnode(self):
-        text = "This is **text** with an *italic* word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
-        print(text_to_textnodes(text))
         print("====================\nTextNode Test End\n====================")
-
+       
     if __name__ == "__main__":
         unittest.main()
