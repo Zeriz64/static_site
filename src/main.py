@@ -1,7 +1,7 @@
 from textnode import *
+from static_to_public import *
 
 def main():
-    new_node = TextNode("this is a text node", "bold", "website.com")
-    print(new_node)
+    static_to_public()
 
 main()
