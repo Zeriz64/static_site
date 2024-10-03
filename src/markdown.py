@@ -30,7 +30,7 @@ def split_nodes_delimiter(nodes, delimiter, text_type):
     return new_nodes
 
 def extract_markdown_images(text):
-    return re.findall(r"!\[([\w\s]*?)\]\((.*?)\)", text)
+    return re.findall(r"!\[([^\[\]]*)\]\(([^\(\)]*)\)", text)
 
 def extract_markdown_links(text):
     return re.findall(r"\[(.*?)\]\((.*?)\)", text)
@@ -53,7 +53,7 @@ def split_nodes_image(old_nodes):
             if len(split_node) != 2:
                 raise ValueError("Image not closed.")
             for i in range(0, len(split_node)):
-                if split_node[i] == "":
+                if split_node == "":
                     continue
                 if i == 0:
                     new_nodes.append(TextNode(split_node[0], text_type_text))
@@ -148,7 +148,7 @@ def block_to_block_type(block):
     return block_type_para
 
 def markdown_to_html_node(markdown):
-    blocks = markdown_to_blocks(markdown)
+    blocks =  markdown_to_blocks(markdown)
     children = []
     for block in blocks:
         block_type = block_to_block_type(block)
@@ -241,7 +241,6 @@ def text_to_children(text):
 def extract_title(markdown):
     lines = markdown.split("\n\n")
     for line in lines:
-        print(line)
         line = line.strip()
         if line.startswith("# "):
             return line[2:]

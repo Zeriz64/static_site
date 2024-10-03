@@ -1,5 +1,6 @@
 import os
 import shutil
+from pathlib import Path
 from markdown import *
 from htmlnode import *
 
@@ -20,7 +21,7 @@ def static_to_public(static_path="/home/zeriz/workspace/course_projects/static_s
 
 def generate_page(from_path, template_path, dest_path):
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
-    file = open("content/index.md")
+    file = open(from_path, "r")
     contents = file.read()
     file.close()
     template_file = open("template.html")
@@ -31,6 +32,19 @@ def generate_page(from_path, template_path, dest_path):
     title = extract_title(contents)
     template = template.replace("{{ Title }}", title)
     template = template.replace("{{ Content }}", html_string)
-    html_file = open(dest_path + "/index.html", "w")
+    dest_dir_path = os.path.dirname(dest_path)
+    if dest_dir_path != "":
+        os.makedirs(dest_dir_path, exist_ok=True)
+    html_file = open(dest_path, "w")
     html_file.write(template)
-    html_file.close()
+
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    files = os.listdir(dir_path_content)
+    for file in files:
+        location = dir_path_content + "/" + file
+        destination = dest_dir_path + "/" + file
+        if os.path.isfile(location):
+            destination = Path(destination).with_suffix(".html")
+            generate_page(location, template_path, destination)
+        else:
+            generate_pages_recursive(location, template_path, destination)
